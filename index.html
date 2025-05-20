@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Configuración</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Configuración del Ritmo</h1>
+
+  <form id="configForm">
+    <label for="bpm">Pulsaciones por minuto (60-180):</label>
+    <br>
+    <input type="range" id="bpm" min="60" max="180" value="100" oninput="bpmOutput.value = bpm.value">
+    <output id="bpmOutput">100</output> BPM<br><br>
+
+    <label>Selecciona compás:</label><br>
+    <button type="button" class="compas-btn" data-compas="2">2 tiempos</button>
+    <button type="button" class="compas-btn" data-compas="4">4 tiempos</button>
+    <br>
+    <br>
+    <input type="hidden" id="compas" value="2">
+    <label for="descanso">Descanso antes de empezar (segundos):</label>
+    <input type="number" id="descanso" min="0" value="0"><br><br>
+
+    <button type="submit">Iniciar</button>
+  </form>
+
+  <script src="script.js"></script>
+</body>
+</html>
