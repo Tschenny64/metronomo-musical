@@ -135,12 +135,12 @@ input[type="range"] {
 }
 
 input[type="number"] {
-  width: 100%;
-  padding: 10px;
+  width: 80px; /* antes era 100% */
+  padding: 8px;
   margin-top: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .compas-buttons {
@@ -190,4 +190,22 @@ button[type="submit"]:hover,
 #iniciarBtn:hover {
   background-color: #2980b9;
   transform: scale(1.05);
+}
+
+body.movimiento {
+  background-color: white !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* para que tome toda la altura de la pantalla */
+  margin: 0;
+  padding: 0;
+}
+
+body.movimiento .pantalla {
+  width: 600px;
+  height: 200px;
+  margin: 0 auto;
+  position: relative;
 }
