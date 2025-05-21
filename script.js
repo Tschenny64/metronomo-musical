@@ -58,9 +58,9 @@ if (document.getElementById('mano')) {
   const duracionAnimacion = intervalo / 2;
 
   const imagenesTambor = [
-    'img/tambor1.jpg',
-    'img/tambor2.jpg',
-    'img/tambor3.jpg'
+    'img/tambor1.png',
+    'img/tambor2.png',
+    'img/tambor3.png'
   ];
   let golpes = 0;
   let indiceTambor = 0;
