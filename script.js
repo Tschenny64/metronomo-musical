@@ -1,4 +1,3 @@
-// ========== PANTALLA DE CONFIGURACIÓN ==========
 if (document.getElementById('configForm')) {
   const compasBtns = document.querySelectorAll('.compas-btn');
   const compasInput = document.getElementById('compas');
@@ -19,9 +18,11 @@ if (document.getElementById('configForm')) {
     const bpm = document.getElementById('bpm').value;
     const compas = document.getElementById('compas').value;
     const descanso = parseInt(document.getElementById('descanso').value) || 0;
+    const tiempoUso = parseInt(document.getElementById('tiempoUso').value) || 0;
 
     localStorage.setItem('bpm', bpm);
     localStorage.setItem('compas', compas);
+    localStorage.setItem('tiempoUso', tiempoUso);
 
     if (descanso > 0) {
       iniciarBtn.disabled = true;
@@ -42,19 +43,19 @@ if (document.getElementById('configForm')) {
   });
 }
 
-// ========== PANTALLA DE MOVIMIENTO ==========
 if (document.getElementById('mano')) {
   const bpm = parseInt(localStorage.getItem('bpm')) || 100;
   const compas = parseInt(localStorage.getItem('compas')) || 4;
+  const tiempoUso = parseInt(localStorage.getItem('tiempoUso')) || 0;
+
   const mano = document.getElementById('mano');
   const tambor = document.getElementById('tambor');
   const efectoGolpe = document.getElementById('efectoGolpe');
 
   const intervalo = (60 / bpm) * 1000;
-  let pulso = 0;
   let animando = false;
 
-  const distancia = 350; // Ajusta si la mano se mueve demasiado
+  const distancia = 350;
   const duracionAnimacion = intervalo / 2;
 
   const imagenesTambor = [
@@ -64,6 +65,7 @@ if (document.getElementById('mano')) {
   ];
   let golpes = 0;
   let indiceTambor = 0;
+  tambor.src = imagenesTambor[0];
 
   function cambiarTamborCadaNGolpes(n) {
     golpes++;
@@ -100,15 +102,14 @@ if (document.getElementById('mano')) {
     requestAnimationFrame(moverMano);
   }
 
+  // Inicia el movimiento repetido
   setInterval(() => {
-    pulso++;
-
-    if ((pulso - 1) % compas === 0 && !animando) {
+    if (!animando) {
       animando = true;
 
       animarMovimiento(0, distancia, duracionAnimacion, () => {
-        mostrarEfectoGolpe();                      // Solo el golpe, sin explosión
-        cambiarTamborCadaNGolpes(compas);
+        mostrarEfectoGolpe();
+        cambiarTamborCadaNGolpes(1);
 
         animarMovimiento(distancia, 0, duracionAnimacion, () => {
           animando = false;
@@ -116,4 +117,11 @@ if (document.getElementById('mano')) {
       });
     }
   }, intervalo);
+
+  // Redirigir al index después del tiempo de uso
+  if (tiempoUso > 0) {
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, tiempoUso * 1000); // convertir a milisegundos
+  }
 }
