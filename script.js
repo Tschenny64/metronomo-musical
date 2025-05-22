@@ -1,9 +1,11 @@
+// --- CONFIGURACIÓN ---
 if (document.getElementById('configForm')) {
   const compasBtns = document.querySelectorAll('.compas-btn');
   const compasInput = document.getElementById('compas');
   const form = document.getElementById('configForm');
   const iniciarBtn = form.querySelector('button[type="submit"]');
 
+  // Gestión de selección del compás
   compasBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       compasInput.value = btn.dataset.compas;
@@ -12,6 +14,7 @@ if (document.getElementById('configForm')) {
     });
   });
 
+  // Al enviar el formulario
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -20,10 +23,12 @@ if (document.getElementById('configForm')) {
     const descanso = parseInt(document.getElementById('descanso').value) || 0;
     const tiempoUso = parseInt(document.getElementById('tiempoUso').value) || 0;
 
+    // Guardar en localStorage
     localStorage.setItem('bpm', bpm);
     localStorage.setItem('compas', compas);
     localStorage.setItem('tiempoUso', tiempoUso);
 
+    // Si hay tiempo de descanso, mostrar cuenta regresiva
     if (descanso > 0) {
       iniciarBtn.disabled = true;
       let tiempoRestante = descanso;
@@ -43,6 +48,7 @@ if (document.getElementById('configForm')) {
   });
 }
 
+// --- MOVIMIENTO ---
 if (document.getElementById('mano')) {
   const bpm = parseInt(localStorage.getItem('bpm')) || 100;
   const compas = parseInt(localStorage.getItem('compas')) || 4;
@@ -52,11 +58,11 @@ if (document.getElementById('mano')) {
   const tambor = document.getElementById('tambor');
   const efectoGolpe = document.getElementById('efectoGolpe');
 
-  const intervalo = (60 / bpm) * 1000;
+  const intervalo = (60 / bpm) * 1000; // Tiempo entre golpes
   let animando = false;
 
-  const distancia = 350;
-  const duracionAnimacion = intervalo / 2;
+  const distancia = 350; // Recorrido de la mano en px
+  const duracionAnimacion = intervalo / 2; // Mitad del intervalo para ida o vuelta
 
   const imagenesTambor = [
     'img/tambor1.png',
@@ -67,6 +73,7 @@ if (document.getElementById('mano')) {
   let indiceTambor = 0;
   tambor.src = imagenesTambor[0];
 
+  // Cambia la imagen del tambor cada N golpes
   function cambiarTamborCadaNGolpes(n) {
     golpes++;
     if (golpes % n === 0) {
@@ -75,6 +82,7 @@ if (document.getElementById('mano')) {
     }
   }
 
+  // Muestra un efecto visual de golpe
   function mostrarEfectoGolpe() {
     efectoGolpe.classList.add('activo');
     setTimeout(() => {
@@ -82,6 +90,7 @@ if (document.getElementById('mano')) {
     }, 250);
   }
 
+  // Función de animación de la mano
   function animarMovimiento(inicio, fin, duracion, callback) {
     let start = null;
 
@@ -102,15 +111,17 @@ if (document.getElementById('mano')) {
     requestAnimationFrame(moverMano);
   }
 
-  // Inicia el movimiento repetido
+  // Inicia el golpeo en bucle según el intervalo
   setInterval(() => {
     if (!animando) {
       animando = true;
 
+      // Animación hacia adelante
       animarMovimiento(0, distancia, duracionAnimacion, () => {
         mostrarEfectoGolpe();
         cambiarTamborCadaNGolpes(1);
 
+        // Animación de regreso
         animarMovimiento(distancia, 0, duracionAnimacion, () => {
           animando = false;
         });
@@ -118,10 +129,10 @@ if (document.getElementById('mano')) {
     }
   }, intervalo);
 
-  // Redirigir al index después del tiempo de uso
+  // Finaliza y vuelve al index después del tiempo de uso
   if (tiempoUso > 0) {
     setTimeout(() => {
       window.location.href = "index.html";
-    }, tiempoUso * 1000); // convertir a milisegundos
+    }, tiempoUso * 1000);
   }
 }

@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Configuración</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
   <h1>Configuración del Ritmo</h1>
 
   <form id="configForm">
+    <!-- Formulario de configuración -->
+
     <label for="bpm">Pulsaciones por minuto (60-180):</label>
     <br>
+    <!-- Control deslizante para seleccionar el tempo -->
     <input type="range" id="bpm" min="60" max="180" value="100" oninput="bpmOutput.value = bpm.value">
-    <output id="bpmOutput">100</output> BPM<br><br>
+    <!-- Actualiza en tiempo real el valor seleccionado con el control deslizante -->
+    <output id="bpmOutput">100</output> BPM
+    <br><br>
 
     <label>Selecciona compás:</label><br>
+    <!-- Botones para seleccionar el tipo de compás (2 o 4 tiempos) -->
     <button type="button" class="compas-btn" data-compas="2">2 tiempos</button>
     <button type="button" class="compas-btn" data-compas="4">4 tiempos</button>
     <br><br>
@@ -22,9 +31,11 @@
     <input type="hidden" id="compas" value="2">
 
     <label for="descanso">Descanso antes de empezar (segundos):</label>
+    <!-- Campo numérico para establecer el tiempo de espera antes de iniciar -->
     <input type="number" id="descanso" min="0" value="0"><br><br>
 
     <label for="tiempoUso">Tiempo de uso (segundos):</label>
+    <!-- Campo obligatorio que define la duración de la sesión -->
     <input type="number" id="tiempoUso" min="1" value="" required><br><br>
 
     <button type="submit">Iniciar</button>
