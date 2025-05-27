@@ -1,11 +1,9 @@
-// --- CONFIGURACIÓN ---
 if (document.getElementById('configForm')) {
   const compasBtns = document.querySelectorAll('.compas-btn');
   const compasInput = document.getElementById('compas');
   const form = document.getElementById('configForm');
   const iniciarBtn = form.querySelector('button[type="submit"]');
 
-  // Gestión de selección del compás
   compasBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       compasInput.value = btn.dataset.compas;
@@ -14,7 +12,6 @@ if (document.getElementById('configForm')) {
     });
   });
 
-  // Al enviar el formulario
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -23,57 +20,38 @@ if (document.getElementById('configForm')) {
     const descanso = parseInt(document.getElementById('descanso').value) || 0;
     const tiempoUso = parseInt(document.getElementById('tiempoUso').value) || 0;
 
-    // Guardar en localStorage
     localStorage.setItem('bpm', bpm);
     localStorage.setItem('compas', compas);
     localStorage.setItem('tiempoUso', tiempoUso);
+    localStorage.setItem('descanso', descanso);
 
-    // Si hay tiempo de descanso, mostrar cuenta regresiva
-    if (descanso > 0) {
-      iniciarBtn.disabled = true;
-      let tiempoRestante = descanso;
-
-      const countdown = setInterval(() => {
-        iniciarBtn.textContent = `Iniciando en ${tiempoRestante}s...`;
-        tiempoRestante--;
-
-        if (tiempoRestante < 0) {
-          clearInterval(countdown);
-          window.location.href = "movimiento.html";
-        }
-      }, 1000);
-    } else {
-      window.location.href = "movimiento.html";
-    }
+    window.location.href = "movimiento.html";
   });
 }
 
-// --- MOVIMIENTO ---
 if (document.getElementById('mano')) {
   const bpm = parseInt(localStorage.getItem('bpm')) || 100;
   const compas = parseInt(localStorage.getItem('compas')) || 4;
   const tiempoUso = parseInt(localStorage.getItem('tiempoUso')) || 0;
+  const descanso = parseInt(localStorage.getItem('descanso')) || 0;
 
   const mano = document.getElementById('mano');
   const tambor = document.getElementById('tambor');
   const efectoGolpe = document.getElementById('efectoGolpe');
+  const cuentaRegresiva = document.getElementById('cuentaRegresiva');
 
-  const intervalo = (60 / bpm) * 1000; // Tiempo entre golpes
+  const intervalo = (60 / bpm) * 1000;
+  const distancia = 350;
+  const duracionAnimacion = intervalo / 2;
+
   let animando = false;
-
-  const distancia = 350; // Recorrido de la mano en px
-  const duracionAnimacion = intervalo / 2; // Mitad del intervalo para ida o vuelta
-
-  const imagenesTambor = [
-    'img/tambor1.png',
-    'img/tambor2.png',
-    'img/tambor3.png'
-  ];
   let golpes = 0;
   let indiceTambor = 0;
+  let tiempoActual = 0;
+
+  const imagenesTambor = ['img/tambor1.png', 'img/tambor2.png', 'img/tambor3.png'];
   tambor.src = imagenesTambor[0];
 
-  // Cambia la imagen del tambor cada N golpes
   function cambiarTamborCadaNGolpes(n) {
     golpes++;
     if (golpes % n === 0) {
@@ -82,7 +60,6 @@ if (document.getElementById('mano')) {
     }
   }
 
-  // Muestra un efecto visual de golpe
   function mostrarEfectoGolpe() {
     efectoGolpe.classList.add('activo');
     setTimeout(() => {
@@ -90,49 +67,93 @@ if (document.getElementById('mano')) {
     }, 250);
   }
 
-  // Función de animación de la mano
   function animarMovimiento(inicio, fin, duracion, callback) {
     let start = null;
-
     function moverMano(timestamp) {
       if (!start) start = timestamp;
       const elapsed = timestamp - start;
       const progreso = Math.min(elapsed / duracion, 1);
       const posicion = inicio + (fin - inicio) * progreso;
       mano.style.transform = `translateX(-${posicion}px)`;
-
       if (progreso < 1) {
         requestAnimationFrame(moverMano);
       } else if (callback) {
         callback();
       }
     }
-
     requestAnimationFrame(moverMano);
   }
 
-  // Inicia el golpeo en bucle según el intervalo
-  setInterval(() => {
-    if (!animando) {
-      animando = true;
+  function iniciarAnimacion() {
+    setInterval(() => {
+      if (!animando) {
+        tiempoActual = (tiempoActual % 4) + 1;
+        const debeGolpear = (compas === 2 && (tiempoActual === 1 || tiempoActual === 3)) ||
+                            (compas === 4 && tiempoActual === 1);
 
-      // Animación hacia adelante
-      animarMovimiento(0, distancia, duracionAnimacion, () => {
-        mostrarEfectoGolpe();
-        cambiarTamborCadaNGolpes(1);
+        if (debeGolpear) {
+          animando = true;
+          animarMovimiento(0, distancia, duracionAnimacion, () => {
+            mostrarEfectoGolpe();
+            cambiarTamborCadaNGolpes(1);
+            animarMovimiento(distancia, 0, duracionAnimacion, () => {
+              animando = false;
+            });
+          });
+        }
+      }
+    }, intervalo);
 
-        // Animación de regreso
-        animarMovimiento(distancia, 0, duracionAnimacion, () => {
-          animando = false;
-        });
-      });
+    if (tiempoUso > 0) {
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, tiempoUso * 1000);
     }
-  }, intervalo);
-
-  // Finaliza y vuelve al index después del tiempo de uso
-  if (tiempoUso > 0) {
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, tiempoUso * 1000);
   }
+
+  if (descanso > 0) {
+    cuentaRegresiva.style.display = 'block';
+    cuentaRegresiva.style.fontSize = '100px';
+    cuentaRegresiva.style.fontWeight = 'bold';
+    cuentaRegresiva.style.color = 'red';
+
+    let cuenta = descanso;
+    cuentaRegresiva.textContent = cuenta;
+
+    const cuentaInterval = setInterval(() => {
+      cuenta--;
+      if (cuenta >= 0) {
+        cuentaRegresiva.textContent = cuenta;
+      } else {
+        clearInterval(cuentaInterval);
+        cuentaRegresiva.style.display = 'none';
+        iniciarAnimacion();
+      }
+    }, 1000);
+  } else {
+    iniciarAnimacion();
+  }
+}
+
+// Botón de pantalla completa
+const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+if (fullscreenBtn) {
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      fullscreenBtn.textContent = 'Salir de pantalla completa';
+    } else {
+      document.exitFullscreen();
+      fullscreenBtn.textContent = 'Pantalla completa';
+    }
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+      fullscreenBtn.textContent = 'Pantalla completa';
+    } else {
+      fullscreenBtn.textContent = 'Salir de pantalla completa';
+    }
+  });
 }

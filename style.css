@@ -209,3 +209,15 @@ body.movimiento .pantalla {
   margin: 0 auto;
   position: relative;
 }
+
+.cuenta-atras {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 100px;
+  font-weight: bold;
+  color: red;
+  display: none;
+  z-index: 9999;
+}

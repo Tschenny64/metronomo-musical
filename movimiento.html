@@ -3,29 +3,19 @@
 
 <head>
   <meta charset="UTF-8">
-
-  <title>Pantalla aplicación</title>
+  <title>Aplicación</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="movimiento">
-
-  <h2>Pantalla aplicación</h2>
-
+  <div id="cuentaRegresiva" class="contador"></div>
   <div class="pantalla">
-    <!-- Contenedor principal de los elementos visuales -->
-
-    <!-- Imagen del tambor que es el foco de interacción -->
-    <img id="tambor" src="img/tambor1.jpg" class="tambor" alt="Tambor">
-
-    <!-- Imagen de una mano usada para una animación de golpe -->
+    <img id="tambor" src="img/tambor1.png" class="tambor" alt="Tambor">
     <img src="img/manita1.png" alt="Mano" class="mano" id="mano">
-
-    <!-- Imagen del efecto visual de un golpe mostrado al presionar -->
     <img id="efectoGolpe" src="img/golpe2.png" alt="Efecto de golpe" class="efecto-golpe">
   </div>
-
+  <button id="fullscreenBtn">Pantalla completa</button>
   <script src="script.js"></script>
-
 </body>
+
 </html>
