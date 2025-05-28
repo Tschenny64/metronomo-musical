@@ -113,18 +113,11 @@ if (document.getElementById('mano')) {
 
   if (descanso > 0) {
     cuentaRegresiva.style.display = 'block';
-    cuentaRegresiva.style.fontSize = '100px';
-    cuentaRegresiva.style.fontWeight = 'bold';
-    cuentaRegresiva.style.color = 'red';
-
     let cuenta = descanso;
-    cuentaRegresiva.textContent = cuenta;
-
     const cuentaInterval = setInterval(() => {
+      if (cuenta <= 4) cuentaRegresiva.textContent = cuenta;
       cuenta--;
-      if (cuenta >= 0) {
-        cuentaRegresiva.textContent = cuenta;
-      } else {
+      if (cuenta < 0) {
         clearInterval(cuentaInterval);
         cuentaRegresiva.style.display = 'none';
         iniciarAnimacion();
@@ -135,7 +128,13 @@ if (document.getElementById('mano')) {
   }
 }
 
-// Botón de pantalla completa
+function activarPantallaCompleta() {
+  const el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen();
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if (el.msRequestFullscreen) el.msRequestFullscreen();
+}
+
 const fullscreenBtn = document.getElementById('fullscreenBtn');
 
 if (fullscreenBtn) {
@@ -146,14 +145,6 @@ if (fullscreenBtn) {
     } else {
       document.exitFullscreen();
       fullscreenBtn.textContent = 'Pantalla completa';
-    }
-  });
-
-  document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement) {
-      fullscreenBtn.textContent = 'Pantalla completa';
-    } else {
-      fullscreenBtn.textContent = 'Salir de pantalla completa';
     }
   });
 }
