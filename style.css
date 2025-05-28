@@ -215,10 +215,15 @@ button[type="submit"]:hover,
   bottom: 20px;
   right: 20px;
   padding: 12px 20px;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   background: #222;
   color: #fff;
   border: none;
   cursor: pointer;
   border-radius: 10px;
+}
+
+.pantalla.zoom {
+  transform: scale(2.4);        
+  transform-origin: center; 
 }
