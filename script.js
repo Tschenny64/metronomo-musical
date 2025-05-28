@@ -84,32 +84,36 @@ if (document.getElementById('mano')) {
     requestAnimationFrame(moverMano);
   }
 
-  function iniciarAnimacion() {
-    setInterval(() => {
-      if (!animando) {
-        tiempoActual = (tiempoActual % 4) + 1;
-        const debeGolpear = (compas === 2 && (tiempoActual === 1 || tiempoActual === 3)) ||
-                            (compas === 4 && tiempoActual === 1);
+function iniciarAnimacion() {
+  const preGolpeDelay = duracionAnimacion; // Empieza a mover antes del golpe
 
-        if (debeGolpear) {
-          animando = true;
-          animarMovimiento(0, distancia, duracionAnimacion, () => {
-            mostrarEfectoGolpe();
-            cambiarTamborCadaNGolpes(1);
-            animarMovimiento(distancia, 0, duracionAnimacion, () => {
-              animando = false;
-            });
-          });
-        }
-      }
-    }, intervalo);
+  setInterval(() => {
+    tiempoActual = (tiempoActual % 4) + 1;
+    const debeGolpear = (compas === 2 && (tiempoActual === 1 || tiempoActual === 3)) ||
+                        (compas === 4 && tiempoActual === 1);
 
-    if (tiempoUso > 0) {
+    if (debeGolpear) {
+      // Mueve la mano justo antes del golpe
       setTimeout(() => {
-        window.location.href = "index.html";
-      }, tiempoUso * 1000);
+        animando = true;
+        animarMovimiento(0, distancia, duracionAnimacion, () => {
+          mostrarEfectoGolpe();
+          cambiarTamborCadaNGolpes(1);
+          animarMovimiento(distancia, 0, duracionAnimacion, () => {
+            animando = false;
+          });
+        });
+      }, intervalo - duracionAnimacion); // Mueve justo para llegar al golpe a tiempo
     }
+  }, intervalo);
+
+  if (tiempoUso > 0) {
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, tiempoUso * 1000);
   }
+}
+
 
   if (descanso > 0) {
     cuentaRegresiva.style.display = 'block';
