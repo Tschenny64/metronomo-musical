@@ -30,5 +30,46 @@
   </form>
 
   <script src="script.js"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const bpmInput = document.getElementById('bpm');
+  const bpmOutput = document.getElementById('bpmOutput');
+  const tiempoUsoInput = document.getElementById('tiempoUso');
+  const descansoInput = document.getElementById('descanso');
+  const compasInput = document.getElementById('compas');
+  const compasBtns = document.querySelectorAll('.compas-btn');
+
+  const bpm = localStorage.getItem('bpm');
+  const tiempoUso = localStorage.getItem('tiempoUso');
+  const descanso = localStorage.getItem('descanso');
+  const compas = localStorage.getItem('compas');
+
+  if (bpm !== null) {
+    bpmInput.value = bpm;
+    bpmOutput.value = bpm;
+  }
+
+  if (tiempoUso !== null) {
+    tiempoUsoInput.value = tiempoUso;
+  }
+
+  if (descanso !== null) {
+    descansoInput.value = descanso;
+  }
+
+  if (compas !== null) {
+    compasInput.value = compas;
+
+    compasBtns.forEach(btn => {
+      if (btn.dataset.compas === compas) {
+        btn.classList.add('selected');
+      } else {
+        btn.classList.remove('selected');
+      }
+    });
+  }
+});
+</script>
+
 </body>
 </html>
