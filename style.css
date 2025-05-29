@@ -185,16 +185,6 @@ button[type="submit"]:hover,
   transform: scale(1.05);
 }
 
-
-.container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
 #efectoGolpe.activo {
   opacity: 1;
 }
