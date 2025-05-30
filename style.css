@@ -11,11 +11,10 @@ form {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 2px solid black;
   margin: 20px auto;
-  width: 600px;
-  height: 200px;
-  padding: 20px;
+  width: 450px;             /* Reducimos el ancho */
+  height: 180px;
+  padding: 10px;
   position: relative;
 }
 
@@ -39,7 +38,7 @@ form {
 .mano {
   height: 150px;
   position: absolute;
-  right:30px;
+  right: 15px;               /* Más cerca del tambor */
   transform: translateX(0);
 }
 
@@ -191,13 +190,14 @@ button[type="submit"]:hover,
 
 #cuentaRegresiva {
   position: absolute;
-  top: 20px;
-  width: 100%;
-  text-align: center;
-  font-size: 8vw;
+  top: 50%;               /* Posición vertical central */
+  left: 50%;              /* Posición horizontal central */
+  transform: translate(-50%, -50%); /* Alineación exacta al centro */
+  font-size: 10vw;        /* Tamaño más grande */
   font-weight: bold;
   color: red;
   z-index: 4;
+  pointer-events: none;   /* Para que no interfiera con clics */
 }
 
 #fullscreenBtn {

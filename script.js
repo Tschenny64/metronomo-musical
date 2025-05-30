@@ -41,7 +41,7 @@ if (document.getElementById('mano')) {
   const cuentaRegresiva = document.getElementById('cuentaRegresiva');
 
   const intervalo = (60 / bpm) * 1000;
-  const distancia = 350;
+  const distancia = 270;
   const duracionAnimacion = intervalo / 2;
 
   let animando = false;
