@@ -2,7 +2,6 @@ if (document.getElementById('configForm')) {
   const compasBtns = document.querySelectorAll('.compas-btn');
   const compasInput = document.getElementById('compas');
   const form = document.getElementById('configForm');
-  const iniciarBtn = form.querySelector('button[type="submit"]');
 
   compasBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -40,14 +39,14 @@ if (document.getElementById('mano')) {
   const efectoGolpe = document.getElementById('efectoGolpe');
   const cuentaRegresiva = document.getElementById('cuentaRegresiva');
 
-  const intervalo = (60 / bpm) * 1000;
+  const intervaloMs = (60 / bpm) * 1000; // Milisegundos por pulso
   const distancia = 270;
-  const duracionAnimacion = intervalo / 2;
+  const duracionAnimacion = intervaloMs / 2;
 
   let animando = false;
+  let tiempoActual = 0;
   let golpes = 0;
   let indiceTambor = 0;
-  let tiempoActual = 0;
 
   const imagenesTambor = ['img/tambor1.png', 'img/tambor2.png', 'img/tambor3.png'];
   tambor.src = imagenesTambor[0];
@@ -84,18 +83,17 @@ if (document.getElementById('mano')) {
     requestAnimationFrame(moverMano);
   }
 
-function iniciarAnimacion() {
-  const preGolpeDelay = duracionAnimacion; // Empieza a mover antes del golpe
+  function iniciarAnimacion() {
+    tiempoActual = 0;
 
-  setInterval(() => {
-    tiempoActual = (tiempoActual % 4) + 1;
-    const debeGolpear = (compas === 2 && (tiempoActual === 1 || tiempoActual === 3)) ||
-                        (compas === 4 && tiempoActual === 1);
+    // Iniciar bucle principal del metrónomo
+    setInterval(() => {
+      tiempoActual = (tiempoActual % compas) + 1;
 
-    if (debeGolpear) {
-      // Mueve la mano justo antes del golpe
-      setTimeout(() => {
+      // Solo animar si no hay otra animación en marcha
+      if (!animando) {
         animando = true;
+
         animarMovimiento(0, distancia, duracionAnimacion, () => {
           mostrarEfectoGolpe();
           cambiarTamborCadaNGolpes(1);
@@ -103,40 +101,53 @@ function iniciarAnimacion() {
             animando = false;
           });
         });
-      }, intervalo - duracionAnimacion); // Mueve justo para llegar al golpe a tiempo
+      }
+    }, intervaloMs);
+
+    // Si hay tiempo de uso definido, detener después de ese tiempo
+    if (tiempoUso > 0) {
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, tiempoUso * 1000);
     }
-  }, intervalo);
-
-  if (tiempoUso > 0) {
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, tiempoUso * 1000);
   }
-}
-
 
   if (descanso > 0) {
     cuentaRegresiva.style.display = 'block';
     let cuenta = descanso;
-    const cuentaInterval = setInterval(() => {
-      if (cuenta <= 4) cuentaRegresiva.textContent = cuenta;
+
+    if (cuenta <= 4) cuentaRegresiva.textContent = cuenta;
+
+    const intervalID = setInterval(() => {
       cuenta--;
-      if (cuenta < 0) {
-        clearInterval(cuentaInterval);
-        cuentaRegresiva.style.display = 'none';
-        iniciarAnimacion();
+
+      if (cuenta >= 0) {
+        if (cuenta <= 4) {
+          cuentaRegresiva.textContent = cuenta;
+        }
+
+        if (cuenta === 0) {
+          // Hacer primer golpe exactamente en el 0
+          animando = true;
+          animarMovimiento(0, distancia, duracionAnimacion, () => {
+            mostrarEfectoGolpe();
+            cambiarTamborCadaNGolpes(1);
+            animarMovimiento(distancia, 0, duracionAnimacion, () => {
+              animando = false;
+            });
+          });
+        }
       }
-    }, 1000);
+
+      if (cuenta < 0) {
+        clearInterval(intervalID);
+        cuentaRegresiva.style.display = 'none';
+        iniciarAnimacion(); // Comenzar animación normal
+      }
+    }, intervaloMs);
   } else {
     iniciarAnimacion();
   }
-}
-
-function activarPantallaCompleta() {
-  const el = document.documentElement;
-  if (el.requestFullscreen) el.requestFullscreen();
-  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-  else if (el.msRequestFullscreen) el.msRequestFullscreen();
 }
 
 const fullscreenBtn = document.getElementById('fullscreenBtn');
