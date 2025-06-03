@@ -1,3 +1,6 @@
+// Cargar el archivo de audio
+const golpeAudio = new Audio('sonidos/golpe.mp3');
+
 if (document.getElementById('configForm')) {
   const compasBtns = document.querySelectorAll('.compas-btn');
   const compasInput = document.getElementById('compas');
@@ -18,11 +21,13 @@ if (document.getElementById('configForm')) {
     const compas = document.getElementById('compas').value;
     const descanso = parseInt(document.getElementById('descanso').value) || 0;
     const tiempoUso = parseInt(document.getElementById('tiempoUso').value) || 0;
+    const sonido = document.getElementById('sonido').checked;
 
     localStorage.setItem('bpm', bpm);
     localStorage.setItem('compas', compas);
     localStorage.setItem('tiempoUso', tiempoUso);
     localStorage.setItem('descanso', descanso);
+    localStorage.setItem('sonido', sonido);
 
     window.location.href = "movimiento.html";
   });
@@ -33,6 +38,7 @@ if (document.getElementById('mano')) {
   const compas = parseInt(localStorage.getItem('compas')) || 4;
   const tiempoUso = parseInt(localStorage.getItem('tiempoUso')) || 0;
   const descanso = parseInt(localStorage.getItem('descanso')) || 0;
+  const sonidoActivo = localStorage.getItem('sonido') === 'true';
 
   const mano = document.getElementById('mano');
   const tambor = document.getElementById('tambor');
@@ -64,6 +70,11 @@ if (document.getElementById('mano')) {
     setTimeout(() => {
       efectoGolpe.classList.remove('activo');
     }, 250);
+
+    if (sonidoActivo) {
+      golpeAudio.currentTime = 0;
+      golpeAudio.play().catch(() => {});
+    }
   }
 
   function animarMovimiento(inicio, fin, duracion, callback) {
@@ -86,11 +97,9 @@ if (document.getElementById('mano')) {
   function iniciarAnimacion() {
     tiempoActual = 0;
 
-    // Iniciar bucle principal del metrónomo
     setInterval(() => {
       tiempoActual = (tiempoActual % compas) + 1;
 
-      // Solo animar si no hay otra animación en marcha
       if (!animando) {
         animando = true;
 
@@ -104,7 +113,6 @@ if (document.getElementById('mano')) {
       }
     }, intervaloMs);
 
-    // Si hay tiempo de uso definido, detener después de ese tiempo
     if (tiempoUso > 0) {
       setTimeout(() => {
         window.location.href = "index.html";
@@ -127,7 +135,6 @@ if (document.getElementById('mano')) {
         }
 
         if (cuenta === 0) {
-          // Hacer primer golpe exactamente en el 0
           animando = true;
           animarMovimiento(0, distancia, duracionAnimacion, () => {
             mostrarEfectoGolpe();
@@ -142,7 +149,7 @@ if (document.getElementById('mano')) {
       if (cuenta < 0) {
         clearInterval(intervalID);
         cuentaRegresiva.style.display = 'none';
-        iniciarAnimacion(); // Comenzar animación normal
+        iniciarAnimacion();
       }
     }, intervaloMs);
   } else {

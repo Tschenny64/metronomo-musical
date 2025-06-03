@@ -25,6 +25,11 @@
     <label for="tiempoUso">Tiempo de uso (segundos):</label>
     <input type="number" id="tiempoUso" min="1" value="30" required><br><br>
 
+    <!-- Checkbox de sonido -->
+    <label for="sonido">
+      <input type="checkbox" id="sonido" name="sonido"> Activar sonido
+    </label><br><br>
+
     <button type="submit">Iniciar</button>
     <div id="cuentaAtras" class="cuenta-atras"></div>
   </form>
@@ -36,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tiempoUso = localStorage.getItem('tiempoUso');
   const descanso = localStorage.getItem('descanso');
   const compas = localStorage.getItem('compas');
+  const sonido = localStorage.getItem('sonido');
 
   if (bpm) {
     const bpmInput = document.getElementById('bpm');
@@ -65,9 +71,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Restaurar estado del checkbox de sonido
+  if (sonido !== null) {
+    document.getElementById('sonido').checked = (sonido === 'true');
+  }
 });
 </script>
-
-
 </body>
 </html>
